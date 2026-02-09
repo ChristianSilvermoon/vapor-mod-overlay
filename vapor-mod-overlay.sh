@@ -150,6 +150,11 @@ case "${VAPOR_UNIVERSAL_UPPER,,}" in
 			MODLIST_HASH="$(printf "%s\n" "${MODLIST[@]}" | sha256sum)"
 			MODLIST_HASH="${MODLIST_HASH%% *}"
 			GAME_OVERLAY_UPPER_DIR+="/$MODLIST_HASH"
+			# Leave an explanation of the modlist for the user to see
+			{
+				echo "Mod List"
+				printf -- "- %s\n" "${MODLIST[@]}"
+			} > "${GAME_OVERLAY_UPPER_DIR}.modlist"
 		else
 			GAME_OVERLAY_UPPER_DIR+="/${MODLIST[0]}"
 		fi
