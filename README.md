@@ -7,10 +7,10 @@ This was inspired by a bug in [Portal 2 VR](https://github.com/Gistix/portal2vr)
 
 And like a completely normal and sane individual with nothing at all wrong with them, I decided that the best and simplest course of action was obviously to write this so I can toggle the mod off/on with an environment variable in the Launch Options. Makes sense, right? ... r-right?
 
-Be Aware:
-- There is **NO** garauntee that this will be perfect or functional. Your files are **YOUR** responsibility. This does not come with a warranty.
-- This is **NOT** intended to and will **NOT** work with non-steam games that you've added to Steam.
-- Good Luck.
+> [!CAUTION]
+> - There is **NO** garauntee that this will be perfect or functional. Your files are **YOUR** responsibility. This does not come with a warranty.
+> - This is **NOT** intended to and will **NOT** work with non-steam games that you've added to Steam.
+> - Good Luck.
 
 ## How Does It Work?
 When correctly configured...
@@ -21,9 +21,10 @@ The script will:
 - Launch the game
 - Undo all of the above after the game exits (ideally)
 
-If the script ever fails to do this, you may need to manually restore your game directory afterwards.
-
-It shouldn't, in theory, but it's not impossible for this to happen.
+> [!WARNING]
+> If the script ever fails to do this, you may need to manually restore your game directory afterwards.
+> 
+> It shouldn't, in theory, but it's not impossible for this to happen.
 
 ## How Do I Use This?
 With `vapor-mod-overlay` stored in your `$PATH` go to the steam game you'd like to use it on and do the following in the Launch Options:
