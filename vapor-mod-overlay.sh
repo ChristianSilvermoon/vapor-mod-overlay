@@ -66,7 +66,7 @@ for mod in "$@"; do
 done
 
 # Handle Upper Directory so that OvrelayFS is read-write
-case "${VAPOR_UNIVERAL_UPPER}" in
+case "${VAPOR_UNIVERSAL_UPPER,,}" in
 	"1"|"true"|"on")
 		GAME_OVERLAY_UPPER_DIR+="/UNIVERSAL"
 	;;
