@@ -127,7 +127,7 @@ fuse-overlayfs -o "lowerdir=${LOWDIRS},upperdir=${GAME_OVERLAY_UPPER_DIR},workdi
 "${VAPOR_LAUNCH_OPTIONS_PREPEND[@]}" "$@" "${VAPOR_LAUNCH_OPTIONS_APPEND[@]}" # Launch Game
 
 # Clean up
-fusermount -u "$PROPER_PWD"   # Unmount Overlayfs
-rmdir "${PROPER_PWD}"         # Get rid of Empty directory
-mv "${PROPER_PWD}"{.vanilla,} # Restore Game Directory
+fusermount -u "$PROPER_PWD"   || exit 1 # Unmount Overlayfs
+rmdir "${PROPER_PWD}"         || exit 1 # Get rid of Empty directory
+mv "${PROPER_PWD}"{.vanilla,}           # Restore Game Directory
 
