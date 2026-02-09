@@ -1,7 +1,82 @@
 #!/bin/bash
 # Do you even vape, bruh?
-
+declare -r VAPOR_VERSION="0.0.1"
+declare -r VAPOR_UPSTREAM="https://github.com/ChristianSilvermoon/vapor-mod-overlay"
 DATA="${XDH_DATA_HOME:-$HOME/.local/share}/vapor-mod-overlay"
+
+case "$1" in
+	"--help"|"-?")
+		echo -e "\e[32;1m${0##*/}\e[37m - \e[36mSimple OverlayFS-based Mod Loader for Steam\e[0m\n"
+
+		echo -e "\e[1mUSAGE (Set Steam Launch Options)\e[0m"
+		echo "   ${0##*/} MOD_1 MOD_2 -- %command%"
+		echo -e "\n\e[1mOPTIONS\e[0m"
+		printf "  %-28s %s\n" \
+			"--list, -l"     "List all mods"             \
+			"--version, -v"  "Print Version Information" \
+			"--help, -?"     "Display this message"
+
+		echo -e "\n\e[1mENVIRONMENT\e[0m\n"
+		printf "  %-28s %s\n%45s\n\n" \
+			"\$VAPOR_DONT"             "Do Not Do Anything (useful for quick disabling mods)" "<on|true|1>" \
+			"\$VAPOR_LOGGING"          "Enable Logging To Disk."                              "<on|true|1>" \
+			"\$VAPOR_DEBUG"            "If Logging is enabled, log Environment and Options"   "<ANY VALUE>" \
+			"\$VAPOR_UNIVERSAL_UPPER"  "Use a Universal OverlayFS Upper (NOT RECOMMENDED)"    "<on|true|1>"
+
+		echo -e "\e[1mSPECIAL MOD FOLDER FILES\e[0m\n"
+		printf "  %s\n    %s\n\n" \
+			"VAPOR_LAUNCH_OPTIONS_APPEND.txt"  "Additional Arguments placed AFTER %command% (one per line)"  \
+			"VAPOR_LAUNCH_OPTIONS_PREPEND.txt" "Additional Arguments placed BEFORE %command% (one per line)" \
+			"VAPOR_INFO.txt"                   "Descriptive text displayed for a mod when '--list' is used."
+		exit
+	;;
+	"--list"|"-l")
+		cd "$DATA/mods"
+		echo -e "\e[32;4;1mVAPOR MOD OVERLAY - MODS\e[0m\n"
+		echo -e "\e[1mLocation: \e[0m$DATA/mods\n"
+
+		for GAME in *; do
+			[ -d "$GAME" ] || continue
+			echo -e "\e[1m$GAME\e[0m"
+			MODS=$(
+				for MOD in "$GAME"/*; do
+					[ -d "$MOD" ] || continue
+					echo "  - ${MOD#*/}"
+					if [ -f "$MOD/VAPOR_INFO.txt" ]; then
+						echo -en "\e[2m"
+						while read modline; do
+							echo "      $modline"
+						done < "$MOD/VAPOR_INFO.txt"
+						echo -e "\e[0m"
+					fi
+				done
+			)
+			if [ "$MODS" ]; then
+				echo "$MODS"
+			else
+				echo -e "  \e[31;2mNo Mods Available\e[0m"
+			fi
+
+			echo ""
+		done
+		exit
+	;;
+	"--version"|"-v")
+		printf "%s\n" \
+			"Vapor Mod Overlay, v${VAPOR_VERSION}"                               \
+			"Copyright (C) 2025-2026 Krissy Silvermoon"                          \
+			"License: MIT <https://opensource.org/license/mit>"                  \
+			""                                                                   \
+			"This is free software; you are free to change and redistribute it." \
+			"There is NO WARRANTY, to the extent permitted by law."              \
+			""                                                                   \
+			"Upstream Source Repository"
+			echo -e "  \e]8;;${VAPOR_UPSTREAM}\e\\${VAPOR_UPSTREAM}\e]8;;\e\\"
+
+		exit
+	;;
+esac
+
 GAMEDIR="$STEAM_COMPAT_INSTALL_PATH"
 
 # We can't really safely assume we can do non-steam games
