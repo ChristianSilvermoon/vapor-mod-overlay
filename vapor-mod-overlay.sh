@@ -25,8 +25,9 @@ case "$1" in
 
 		echo -e "\e[1mSPECIAL MOD FOLDER FILES\e[0m\n"
 		printf "  %s\n    %s\n\n" \
-			"VAPOR_LAUNCH_OPTIONS_APPEND.txt"  "Additional Arguments placed AFTER %command% (one per line)"  \
-			"VAPOR_LAUNCH_OPTIONS_PREPEND.txt" "Additional Arguments placed BEFORE %command% (one per line)" \
+			"VAPOR_LAUNCH_OPTIONS_APPEND.txt"  "Additional Arguments placed AFTER %command% (one per line)"      \
+			"VAPOR_LAUNCH_OPTIONS_PREPEND.txt" "Additional Arguments placed BEFORE %command% (one per line)"     \
+			"VAPOR_ENVIRONMENT.txt"            "Environment Variables to be exported prior to launch (one per line)" \
 			"VAPOR_INFO.txt"                   "Descriptive text displayed for a mod when '--list' is used."
 		exit
 	;;
