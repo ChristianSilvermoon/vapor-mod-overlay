@@ -95,7 +95,14 @@ GAME_MOD_DIR="$DATA/mods/$GDNAME"
 GAME_LOG_DIR="$DATA/logs/$GDNAME"
 GAME_OVERLAY_UPPER_DIR="$DATA/overlayfs/$GDNAME/upper"
 GAME_OVERLAY_WORK_DIR="$DATA/overlayfs/$GDNAME/work"
-LOG="$GAME_LOG_DIR/${EPOCHSECONDS}.log"
+LOGTIME="$EPOCHSECONDS"
+LOG="$GAME_LOG_DIR/${LOGTIME}-main.log"
+
+case "${VAPOR_LOG_CONSOLE,,}" in
+	"1"|"true"|"on")
+		exec &> >(tee -a "$GAME_LOG_DIR/${LOGTIME}-console.log")
+	;;
+esac
 
 [ -d "$DATA/mods"              ] || mkdir -p "$DATA/mods"
 [ -d "$GAME_MOD_DIR"           ] || mkdir -p "$GAME_MOD_DIR"
@@ -204,6 +211,9 @@ LOWDIRS="$(printf -- '%s:' "${MODS[@]}")" # Will have a trailing ":" convenientl
 LOWDIRS+="${PROPER_PWD##*/}.vanilla"
 mkdir "$PROPER_PWD"
 fuse-overlayfs -o "lowerdir=${LOWDIRS},upperdir=${GAME_OVERLAY_UPPER_DIR},workdir=${GAME_OVERLAY_WORK_DIR}" "$PROPER_PWD" || exit 1 
+
+log "Final Command:"
+log "${VAPOR_LAUNCH_OPTIONS_PREPEND[@]} $@ ${VAPOR_LAUNCH_OPTIONS_APPEND[@]}"
 "${VAPOR_LAUNCH_OPTIONS_PREPEND[@]}" "$@" "${VAPOR_LAUNCH_OPTIONS_APPEND[@]}" # Launch Game
 
 # Clean up
