@@ -203,6 +203,17 @@ for x in "${MODS[@]}"; do
 	VAPOR_LAUNCH_OPTIONS_APPEND+=( "${extra_options[@]}" )
 done
 
+# Load Environment Variables from mods
+for x in "${MODS[@]}"; do
+	[ -r "$x/VAPOR_ENVIRONMENT.txt" ] || continue
+	mapfile -t EVARS < "$x/VAPOR_ENVIRONMENT.txt"
+	log "Export Variables for: $x"
+	for x in "${EVARS[@]}"; do
+		log "  - $x"
+		declare -x "$x"
+	done
+done
+
 # Move game directory to backup
 mv "${PROPER_PWD##*/}" "${PROPER_PWD##*/}.vanilla"
 
