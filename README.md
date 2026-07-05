@@ -99,6 +99,23 @@ If a mod folder contains `VAPOR_LAUNCH_OPTIONS_APPEND.txt` and/or `VAPOR_OPTIONS
 
 This is useful for mods that require certain launch options.
 
+
+### Environment Variables
+
+From v0.0.2 onwards, if a mod folder contains `VAPOR_ENVIRONMENT.txt` you can place one variable per line to be added as an environment varabile
+
+Example:
+```bash
+MANGOHUD=1
+PROTON_LOG=1
+```
+
+### Mod Info
+
+If a mod folder contains `VAPOR_INFO.txt` it will be displayed below a mod name as a description in `vapor-mod-overlay -l` output.
+
+This is a great idea to make use of if you need to load mods in a specific order or want to document any conflicts, what it does, or where it came from.
+
 ## Tested Distros
 
 This has been tested on
