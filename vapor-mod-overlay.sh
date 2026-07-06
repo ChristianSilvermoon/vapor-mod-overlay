@@ -1,6 +1,6 @@
 #!/bin/bash
 # Do you even vape, bruh?
-declare -r VAPOR_VERSION="0.0.2"
+declare -r VAPOR_VERSION="0.1.0"
 declare -r VAPOR_UPSTREAM="https://github.com/ChristianSilvermoon/vapor-mod-overlay"
 DATA="${XDG_DATA_HOME:-$HOME/.local/share}/vapor-mod-overlay"
 
@@ -37,7 +37,7 @@ case "$1" in
 
 		echo -e "\e[1mSPECIAL MOD FOLDER FILES\e[0m\n"
 		printf "  %s\n    %s\n\n" \
-			"VAPOR_FILES"                      "Directory merged with Game via OverlayFS (Mod Folder is used if missing)" \  
+			"VAPOR_FILES"                      "Directory merged with Game via OverlayFS (Mod Folder is used if missing)" \
 			"VAPOR_LAUNCH_OPTIONS_APPEND.txt"  "Additional Arguments placed AFTER %command% (one per line)"               \
 			"VAPOR_LAUNCH_OPTIONS_PREPEND.txt" "Additional Arguments placed BEFORE %command% (one per line)"              \
 			"VAPOR_ENVIRONMENT.txt"            "Environment Variables to be exported prior to launch (one per line)"      \
