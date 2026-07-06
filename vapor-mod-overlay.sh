@@ -2,7 +2,7 @@
 # Do you even vape, bruh?
 declare -r VAPOR_VERSION="0.0.2"
 declare -r VAPOR_UPSTREAM="https://github.com/ChristianSilvermoon/vapor-mod-overlay"
-DATA="${XDH_DATA_HOME:-$HOME/.local/share}/vapor-mod-overlay"
+DATA="${XDG_DATA_HOME:-$HOME/.local/share}/vapor-mod-overlay"
 
 case "$1" in
 	"--help"|"-?")
