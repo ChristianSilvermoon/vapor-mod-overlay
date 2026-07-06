@@ -16,7 +16,7 @@ And like a completely normal and sane individual with nothing at all wrong with 
 When correctly configured...
 
 The script will: 
-- Rename your game's folder in your Steam Library to `FOLDER_NAME.vanilla`
+- Rename your game's folder in your Steam Library to `FOLDER_NAME.vapor-vanilla`
 - Mount the game directory to it's normal location with specified mod folders overlayed
 - Launch the game
 - Undo all of the above after the game exits (ideally)
@@ -25,6 +25,8 @@ The script will:
 > If the script ever fails to do this, you may need to manually restore your game directory afterwards.
 > 
 > It shouldn't, in theory, but it's not impossible for this to happen.
+>
+> Automatic recovery will be attempted on subsequent game launches.
 
 ## How Do I Use This?
 With `vapor-mod-overlay` stored in your `$PATH` go to the steam game you'd like to use it on and do the following in the Launch Options:
@@ -38,18 +40,24 @@ Locate the game directory under `$XDG_DATA_HOME/.local/share/vapor-mod-overlay/m
 
 Store the files intended to be placed into the game folder in a folder for your mod.
 
-EXAMPLE:
-
+EXAMPLE Mod Structure:
 ```
 vapor-mod-overlay
 |_mods/
   |_620 - Portal 2/
-     |_ portal2vr-v0.1.5
+     |_MOD-FOLDER-NAME
+       |_VAPOR_FILES/
+       | |_(Content to overlay Game Directory Goes Here)
+       |
+       |_VAPOR_INFO.txt
+       |_VAPOR_LAUNCH_OPTIONS_APPEND.txt
+       |_VAPOR_LAUNCH_OPTIONS_PREPEND.txt
+       |_VAPOR_ENVIRONMENT.txt
 ```
 
 Then set your launch options like so:
 ```
-vapor-mod-overlay MOD_FOLDER_NAME -- %command%
+vapor-mod-overlay MOD-FOLDER-NAME -- %command%
 ```
 
 You can specify multiple mod folder names.

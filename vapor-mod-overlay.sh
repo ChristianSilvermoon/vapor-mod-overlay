@@ -227,7 +227,31 @@ for x in "${MODS[@]}"; do
 done
 
 # Move game directory to backup
-mv "${PROPER_PWD##*/}" "${PROPER_PWD##*/}.vanilla"
+if [ -d "${PROPER_PWD##*/}.vapor-vanilla" ]; then
+	# Vanilla directory exists - assume non-clean exit previously occured.
+
+	log "POSSIBLE UNCLEAN VAPOR-MOD-OVERLAY EXIT! ATTEMPTING RECOVERY."
+	log "   vapor-mod-overlay will attempt to restore game files to their correct state."
+    log "   If successful, vapor-mod-overlay will proceed with launching the game."
+    log "   If failed, vapor-mod-overlay will exit!"
+	log ""
+
+	# IF game directory exists, unmount if possible, and remove.
+	if [ -d "${PROPER_PWD##*/}" ]; then 
+		if mount | grep "${PROPER_PWD##*/} type fuse.fuse-overlayfs" &>/dev/null; then
+			# IF mounted, unmount or fail.
+			log "   Mounted OverlayFS was Detected... Attempting to unmount OverlayFS..."
+			fusermount -u "${PROPER_PWD##*/}" || exit 1
+			log "   Successfully unmounted OverlayFS"
+		fi
+		log "   Attempting to remove empty Game Directory..."
+		rmdir "${PROPER_PWD##*/}" || exit 1
+		log "   Succesfully removed empty Game Directory..."
+	fi
+else
+	# Normal Launch, rename Game Directory.
+	mv "${PROPER_PWD##*/}" "${PROPER_PWD##*/}.vapor-vanilla"
+fi
 
 # v0.1.0 - Check if VAPOR_FILES exists to use for Lower Dir
 #   This helps keep VMO specific files out of the mounted overlayfs directory
@@ -237,9 +261,10 @@ done
 
 # Setup Fuse Overlayfs
 LOWDIRS="$(printf -- '%s:' "${MOD_LOWERS[@]}")" # Will have a trailing ":" conveniently for us :)
-LOWDIRS+="${PROPER_PWD##*/}.vanilla"
+LOWDIRS+="${PROPER_PWD##*/}.vapor-vanilla"
 mkdir "$PROPER_PWD"
 log "LOWDIRS: $LOWDIRS"
+
 fuse-overlayfs -o "lowerdir=${LOWDIRS},upperdir=${GAME_OVERLAY_UPPER_DIR},workdir=${GAME_OVERLAY_WORK_DIR}" "$PROPER_PWD" || exit 1 
 
 log "Final Command:"
@@ -249,5 +274,5 @@ log "${VAPOR_LAUNCH_OPTIONS_PREPEND[@]} $@ ${VAPOR_LAUNCH_OPTIONS_APPEND[@]}"
 # Clean up
 fusermount -u "$PROPER_PWD"   || exit 1 # Unmount Overlayfs
 rmdir "${PROPER_PWD}"         || exit 1 # Get rid of Empty directory
-mv "${PROPER_PWD}"{.vanilla,}           # Restore Game Directory
+mv "${PROPER_PWD}"{.vapor-vanilla,}           # Restore Game Directory
 
