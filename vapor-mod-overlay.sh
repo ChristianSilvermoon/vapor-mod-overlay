@@ -4,6 +4,18 @@ declare -r VAPOR_VERSION="0.0.2"
 declare -r VAPOR_UPSTREAM="https://github.com/ChristianSilvermoon/vapor-mod-overlay"
 DATA="${XDG_DATA_HOME:-$HOME/.local/share}/vapor-mod-overlay"
 
+# Ensure XDG Data Directories Exist
+for x in "$DATA/"{mods,logs,mods-global,overlayfs}; do
+	[ -d "$x" ] || mkdir -p "$x" || MKDIR_ERRORS+=( "$x" )
+done
+
+if [ "${#MKDIR_ERRORS[@]}" -ge 1 ]; then
+	echo "Could not create the following directory location(s):" 1>&2
+	printf -- "  - %s\n" "${MKDIR_ERRORS[@]}" 1>&2
+	exit 1
+fi
+# ------------------------------------------------------------
+
 case "$1" in
 	"--help"|"-?")
 		echo -e "\e[32;1m${0##*/}\e[37m - \e[36mSimple OverlayFS-based Mod Loader for Steam\e[0m\n"
