@@ -37,9 +37,10 @@ case "$1" in
 
 		echo -e "\e[1mSPECIAL MOD FOLDER FILES\e[0m\n"
 		printf "  %s\n    %s\n\n" \
-			"VAPOR_LAUNCH_OPTIONS_APPEND.txt"  "Additional Arguments placed AFTER %command% (one per line)"      \
-			"VAPOR_LAUNCH_OPTIONS_PREPEND.txt" "Additional Arguments placed BEFORE %command% (one per line)"     \
-			"VAPOR_ENVIRONMENT.txt"            "Environment Variables to be exported prior to launch (one per line)" \
+			"VAPOR_FILES"                      "Directory merged with Game via OverlayFS (Mod Folder is used if missing)" \  
+			"VAPOR_LAUNCH_OPTIONS_APPEND.txt"  "Additional Arguments placed AFTER %command% (one per line)"               \
+			"VAPOR_LAUNCH_OPTIONS_PREPEND.txt" "Additional Arguments placed BEFORE %command% (one per line)"              \
+			"VAPOR_ENVIRONMENT.txt"            "Environment Variables to be exported prior to launch (one per line)"      \
 			"VAPOR_INFO.txt"                   "Descriptive text displayed for a mod when '--list' is used."
 		exit
 	;;
@@ -197,8 +198,6 @@ if [ "$MOD_NOT_FOUND" ]; then
 	exit 1
 fi
 
-
-
 PROPER_PWD="$PWD"
 cd ..
 
@@ -230,10 +229,17 @@ done
 # Move game directory to backup
 mv "${PROPER_PWD##*/}" "${PROPER_PWD##*/}.vanilla"
 
+# v0.1.0 - Check if VAPOR_FILES exists to use for Lower Dir
+#   This helps keep VMO specific files out of the mounted overlayfs directory
+for x in "${MODS[@]}"; do
+	[ -d "$x/VAPOR_FILES" ] && MOD_LOWERS+=( "$x/VAPOR_FILES" ) || MOD_LOWERS+=( "$x" )
+done
+
 # Setup Fuse Overlayfs
-LOWDIRS="$(printf -- '%s:' "${MODS[@]}")" # Will have a trailing ":" conveniently for us :)
+LOWDIRS="$(printf -- '%s:' "${MOD_LOWERS[@]}")" # Will have a trailing ":" conveniently for us :)
 LOWDIRS+="${PROPER_PWD##*/}.vanilla"
 mkdir "$PROPER_PWD"
+log "LOWDIRS: $LOWDIRS"
 fuse-overlayfs -o "lowerdir=${LOWDIRS},upperdir=${GAME_OVERLAY_UPPER_DIR},workdir=${GAME_OVERLAY_WORK_DIR}" "$PROPER_PWD" || exit 1 
 
 log "Final Command:"
